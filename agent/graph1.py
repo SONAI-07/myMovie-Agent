@@ -1,35 +1,30 @@
 import os
-
+from typing import Any, Dict
 from dotenv import load_dotenv
-from state import GlobalState
-from nodes.theme_extractor import theme_extractor
-
-
-from typing import TypedDict
-from pydantic import BaseModel, Field
 from langchain_sarvam import ChatSarvam
+
+try:
+    from agent.global_state import GlobalState
+    from agent.nodes.theme_extractor import theme_extractor
+except ImportError:
+    from global_state import GlobalState
+    from nodes.theme_extractor import theme_extractor
 
 # Load environment variables (Ensures SARVAM_API_KEY is available)
 load_dotenv()
 
 
-class Agent_1 :
-
-
- async def reasoning_function(state: GlobalState) -> dict:
+async def reasoning_function(state: GlobalState) -> Dict[str, Any]:
     """
-    Node 1: Extracts theme, emotion, and style.
+    Node 1: Extracts theme, emotion, and style from the watched movie.
     """
-
     movie = state.get("movie_watched", "Unknown")
-    print(f"Movie Watched: {movie}")
-
+    print(f"[Node 1] Analyzing watched movie: {movie}")
 
     llm = ChatSarvam(model="sarvam-105b", reasoning_effort="medium")
 
     # Bind the Pydantic schema to force a JSON-structured object return
     structured_llm = llm.with_structured_output(theme_extractor)
-
 
     prompt = (
         f"You are an expert film analyst. Analyze the core narrative theme, "
@@ -56,3 +51,7 @@ class Agent_1 :
             "dominant_emotion": "Error parsing emotion",
             "cinematic_style": "Error parsing style"
         }
+
+
+class Agent_1:
+    reasoning_function = staticmethod(reasoning_function)
