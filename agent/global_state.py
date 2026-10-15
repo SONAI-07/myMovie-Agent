@@ -8,3 +8,4 @@ class GlobalState(TypedDict, total=False):
     cinematic_style: Optional[str]
     curated_movies: List[Dict[str, Any]]
     final_streaming_links: List[Dict[str, Any]]
+    region: Optional[str]
