@@ -44,12 +44,13 @@ def build_pipeline():
 pipeline_app = build_pipeline()
 
 
-async def run_pipeline(movie_watched: str) -> Dict[str, Any]:
+async def run_pipeline(movie_watched: str, region: str = "US") -> Dict[str, Any]:
     """
-    Executes the recommendation workflow end-to-end for a given movie title.
+    Executes the recommendation workflow end-to-end for a given movie title and region.
     """
     initial_state: GlobalState = {
-        "movie_watched": movie_watched
+        "movie_watched": movie_watched,
+        "region": region
     }
     final_state = await pipeline_app.ainvoke(initial_state)
     return final_state
